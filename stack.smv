@@ -1,0 +1,104 @@
+-- This module should implement a simple stack data structure
+-- which can hold up to `5` numbers from the range `0..3`.
+-- The variable `size` is the current size of the stack, and
+-- the array `values` holds the contents of the stack.
+-- Specifically, `values[0], ..., values[size - 1]` are the
+-- elements of the stack from bottom to top, and the remaining
+-- values are unspecified. The two parameters `op` and `input`
+-- determine how the stack should behave during the current
+-- time step:
+--   * When `op = none`, then nothing should happen.
+--   * When `op = push`, the value currently in `input` should
+--     be pushed onto the stack if the stack is not full.
+--     Otherwise, nothing should happen.
+--   * When `op = pop`, the top value of the stack should be
+--     removed from the stack and its value should be written
+--     into the `output` variable during the *current* step.
+--     If the stack is empty, that value is unspecified.
+MODULE stack(op, input)
+VAR
+  size : 0..5;
+  values : array 0..4 of 0..3;
+
+ASSIGN
+  init(size) := 0;
+  -- Modify these according to the above specification.
+  next(size) := 
+    case 
+      op = push & size < 5 : size + 1;
+      op = pop & size > 0 : size - 1;
+      TRUE : size;
+    esac;
+  next(values[0]) := op = push & size = 0 ? input : values[0];
+  next(values[1]) := op = push & size = 1 ? input : values[1];
+  next(values[2]) := op = push & size = 2 ? input : values[2];
+  next(values[3]) := op = push & size = 3 ? input : values[3];
+  next(values[4]) := op = push & size = 4 ? input : values[4];
+
+DEFINE
+  -- Modify this according to the above specification.
+  output := op = pop & size > 0 ? values[size - 1] : 0;
+
+MODULE main
+
+VAR
+  number : 0..3;
+  op : {push, pop, none};
+  s : stack(op, number);
+
+-- These frozen variables should be used in your CTL specifications.
+-- A frozen variable is nondeterministically picked for the initial
+-- state of the model and remains constant afterwards.
+FROZENVAR
+  some_number : 0..3;
+  some_size : 0..5;
+
+DEFINE
+  full := (s.size = 5);
+  empty := (s.size = 0);
+
+-- (a) The stack cannot be empty and full at the same time.
+CTLSPEC
+  AG !(empty & full)
+
+-- (b) There exists a path along which the stack is eventually always full.
+CTLSPEC
+  EF EG full
+
+-- (c) From any given point of time, there always exists a path in
+--     which the stack will be full.
+CTLSPEC
+  AG EF full
+
+-- (d) Pushing onto a non-full stack increases its size by 1.
+CTLSPEC
+  AG (s.size = some_size & some_size < 5 & op = push -> AX (s.size = some_size + 1))
+
+-- (e) When some number is pushed onto a non-full stack,
+--     then in the next step the stack will be non-empty and
+--     its top element will be that number.
+CTLSPEC
+  AG (s.size = some_size & some_size < 5 & op = push & number = some_number -> AX (s.size > 0 & s.values[s.size -1] = some_number))
+
+-- (f) A full stack remains full after a push operation.
+CTLSPEC
+  AG (full & op = push -> AX full)
+
+-- (g) Popping from a non-empty stack decreases its size by 1.
+CTLSPEC
+  AG ((some_size = s.size & some_size > 0 & op = pop -> AX(s.size = some_size -1)))
+
+-- (h) When some number is popped from a non-empty stack,
+--     then in the current step the output variable of the
+--     stack is equal to the popped number.
+CTLSPEC
+  AG (s.size = some_size & some_size > 0 & op = pop -> (s.output = s.values[some_size - 1]))
+
+-- (i) An empty stack remains empty after a pop operation.
+CTLSPEC
+  AG (empty & op = pop -> AX empty)
+
+-- (j) Whenever the stack is full, there exists a path in which the
+-- stack stays full forever or it remains full until a pop.
+CTLSPEC
+  AG (full -> (EF full | EF (full & AX op = pop)))
