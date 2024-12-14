@@ -1,0 +1,230 @@
+-- author: Prabhu Nithin Gollapudi 
+-- ec25opos
+-- 23269243
+
+-- This model is a representation of the number puzzle game
+
+-- in contrast to the question the model is designed with number starting from 0 to 47
+
+-- so 0 corresponds to A6 in the question, 1 corresponds to B6 in the question and so on with 47 corresponding to H1 in the question    
+
+-- hence starting points of D4 is 19 in the model and B5 is 9 in the model
+
+-- the goal is to visit all the plates in the table in the order 19, 43, 24, 25, 34, 21, 22, 28, 17, 1, 9
+
+-- the relevant image is attached in the submission
+
+MODULE main
+VAR
+    index    : 0..47;        -- current position
+    sequence : {19, 43, 24, 25, 34, 21, 22, 28, 17, 1, 9}; -- numbered plates to visit
+    plates   : array 0..47 of { 0, 1 }; -- 0: plate not visited, 1: plate visited
+
+
+-- goal state is when final plate is visited and all plates are visited
+
+DEFINE
+    goal_state := sequence = 9 & index = 9 &
+        plates[0] = 1 & plates[1] = 1 & plates[2] = 1  & plates[3] = 1 &
+        plates[4] = 1 & plates[5] = 1 & plates[6] = 1  & plates[7] = 1 &
+        plates[8] = 1 & plates[9] = 1 & plates[10] = 1 & plates[11] = 1 &
+        plates[12] = 1 & plates[13] = 1 & plates[14] = 1 & plates[15] = 1 &
+        plates[16] = 1 & plates[17] = 1 & plates[18] = 1 & plates[19] = 1 &
+        plates[20] = 1 & plates[21] = 1 & plates[22] = 1 & plates[23] = 1 &
+        plates[24] = 1 & plates[25] = 1 & plates[26] = 1 & plates[27] = 1 &
+        plates[28] = 1 & plates[29] = 1 & plates[30] = 1 & plates[31] = 1 &
+        plates[32] = 1 & plates[33] = 1 & plates[34] = 1 & plates[35] = 1 &
+        plates[36] = 1 & plates[37] = 1 & plates[38] = 1 & plates[39] = 1 &
+        plates[40] = 1 & plates[41] = 1 & plates[42] = 1 & plates[43] = 1 &
+        plates[44] = 1 & plates[45] = 1 & plates[46] = 1 & plates[47] = 1;
+
+ASSIGN
+    init(index) := 19;
+    init(sequence) := 19;
+
+    init(plates[0])  := 0;
+    init(plates[1])  := 0;
+    init(plates[2])  := 0;
+    init(plates[3])  := 0; 
+    init(plates[4])  := 0;
+    init(plates[5])  := 0;
+    init(plates[6])  := 0;
+    init(plates[7])  := 0;
+    init(plates[8])  := 0;
+    init(plates[9])  := 0;
+    init(plates[10]) := 0;
+    init(plates[11]) := 0;
+    init(plates[12]) := 0;
+    init(plates[13]) := 0;
+    init(plates[14]) := 0;
+    init(plates[15]) := 0;
+    init(plates[16]) := 0;
+    init(plates[17]) := 0;
+    init(plates[18]) := 0;
+    init(plates[19]) := 1; -- starting plate, marked as visited
+    init(plates[20]) := 0;
+    init(plates[21]) := 0;
+    init(plates[22]) := 0;
+    init(plates[23]) := 0;
+    init(plates[24]) := 0;
+    init(plates[25]) := 0;
+    init(plates[26]) := 0;
+    init(plates[27]) := 0;
+    init(plates[28]) := 0;
+    init(plates[29]) := 0;
+    init(plates[30]) := 0;
+    init(plates[31]) := 0;
+    init(plates[32]) := 0;
+    init(plates[33]) := 0;
+    init(plates[34]) := 0;
+    init(plates[35]) := 0;
+    init(plates[36]) := 0;
+    init(plates[37]) := 0;
+    init(plates[38]) := 0;
+    init(plates[39]) := 0;
+    init(plates[40]) := 0;
+    init(plates[41]) := 0;
+    init(plates[42]) := 0;
+    init(plates[43]) := 0;
+    init(plates[44]) := 0;
+    init(plates[45]) := 0;
+    init(plates[46]) := 0;
+    init(plates[47]) := 0;
+
+
+
+  -- giving the next possible plates to move to
+
+    next(index) := case
+        index = 0  : {1, 8};
+        index = 1  : {0, 2, 9};
+        index = 2  : {1, 3, 10};
+        index = 3  : {2, 4, 11};
+        index = 4  : {3, 5, 12};
+        index = 5  : {4, 6, 13};
+        index = 6  : {5, 7, 14};
+        index = 7  : {6, 15};
+        index = 8  : {0, 9, 16};
+        -- index = 9  : {1, 8, 10, 17}; -- end plate
+        index = 10 : {2, 9, 11, 18};
+        index = 11 : {3, 10, 12, 19};
+        index = 12 : {4, 11, 13, 20};
+        index = 13 : {5, 12, 14, 21};
+        index = 14 : {6, 13, 15, 22};
+        index = 15 : {7, 14, 23};
+        index = 16 : {8, 17, 24};
+        index = 17 : {9, 16, 18, 25};
+        index = 18 : {10, 17, 19, 26};
+        index = 19 : {11, 18, 20, 27};
+        index = 20 : {12, 19, 21, 28};
+        index = 21 : {13, 20, 22, 29};
+        index = 22 : {14, 21, 23, 30};
+        index = 23 : {15, 22, 31};
+        index = 24 : {16, 25, 32};
+        index = 25 : {17, 24, 26, 33};
+        index = 26 : {18, 25, 27, 34};
+        index = 27 : {19, 26, 28, 35};
+        index = 28 : {20, 27, 29, 36};
+        index = 29 : {21, 28, 30, 37};
+        index = 30 : {22, 29, 31, 38};
+        index = 31 : {23, 30, 39};
+        index = 32 : {24, 33, 40};
+        index = 33 : {25, 32, 34, 41};
+        index = 34 : {26, 33, 35, 42};
+        index = 35 : {27, 34, 36, 43};
+        index = 36 : {28, 35, 37, 44};
+        index = 37 : {29, 36, 38, 45};
+        index = 38 : {30, 37, 39, 46};
+        index = 39 : {31, 38, 47};
+        index = 40 : {32, 41};
+        index = 41 : {33, 40, 42};
+        index = 42 : {34, 41, 43};
+        index = 43 : {35, 42, 44};
+        index = 44 : {36, 43, 45};
+        index = 45 : {37, 44, 46};
+        index = 46 : {38, 45, 47};
+        index = 47 : {39, 46};
+
+        TRUE : index;
+    esac;
+
+    -- advance sequence only when we hit the correct plate on the table
+    next(sequence) := case
+    --  starting plate: omitted
+        sequence = 19 & next(index) = 43 : 43;
+        sequence = 43 & next(index) = 24 : 24;
+        sequence = 24 & next(index) = 25 : 25;
+        sequence = 25 & next(index) = 34 : 34;
+        sequence = 34 & next(index) = 21 : 21;
+        sequence = 21 & next(index) = 22 : 22;
+        sequence = 22 & next(index) = 28 : 28;
+        sequence = 28 & next(index) = 17 : 17;
+        sequence = 17 & next(index) = 1  : 1;
+        sequence = 1  & next(index) = 9  : 9;
+        TRUE : sequence;
+    esac;
+
+    -- mark each plate as visited as soon as we move on it
+    next(plates[0])  := case next(index) = 0  : 1; TRUE : plates[0]; esac;
+    next(plates[1])  := case next(index) = 1  : 1; TRUE : plates[1]; esac;
+    next(plates[2])  := case next(index) = 2  : 1; TRUE : plates[2]; esac;
+    next(plates[3])  := case next(index) = 3  : 1; TRUE : plates[3]; esac;
+    next(plates[4])  := case next(index) = 4  : 1; TRUE : plates[4]; esac;
+    next(plates[5])  := case next(index) = 5  : 1; TRUE : plates[5]; esac;
+    next(plates[6])  := case next(index) = 6  : 1; TRUE : plates[6]; esac;
+    next(plates[7])  := case next(index) = 7  : 1; TRUE : plates[7]; esac;
+    next(plates[8])  := case next(index) = 8  : 1; TRUE : plates[8]; esac;
+    next(plates[9])  := case next(index) = 9  : 1; TRUE : plates[9]; esac;
+    next(plates[10]) := case next(index) = 10 : 1; TRUE : plates[10]; esac;
+    next(plates[11]) := case next(index) = 11 : 1; TRUE : plates[11]; esac;
+    next(plates[12]) := case next(index) = 12 : 1; TRUE : plates[12]; esac;
+    next(plates[13]) := case next(index) = 13 : 1; TRUE : plates[13]; esac;
+    next(plates[14]) := case next(index) = 14 : 1; TRUE : plates[14]; esac;
+    next(plates[15]) := case next(index) = 15 : 1; TRUE : plates[15]; esac;
+    next(plates[16]) := case next(index) = 16 : 1; TRUE : plates[16]; esac;
+    next(plates[17]) := case next(index) = 17 : 1; TRUE : plates[17]; esac;
+    next(plates[18]) := case next(index) = 18 : 1; TRUE : plates[18]; esac;
+    next(plates[19]) := case next(index) = 19 : 1; TRUE : plates[19]; esac;
+    next(plates[20]) := case next(index) = 20 : 1; TRUE : plates[20]; esac;
+    next(plates[21]) := case next(index) = 21 : 1; TRUE : plates[21]; esac;
+    next(plates[22]) := case next(index) = 22 : 1; TRUE : plates[22]; esac;
+    next(plates[23]) := case next(index) = 23 : 1; TRUE : plates[23]; esac;
+    next(plates[24]) := case next(index) = 24 : 1; TRUE : plates[24]; esac;
+    next(plates[25]) := case next(index) = 25 : 1; TRUE : plates[25]; esac;
+    next(plates[26]) := case next(index) = 26 : 1; TRUE : plates[26]; esac;
+    next(plates[27]) := case next(index) = 27 : 1; TRUE : plates[27]; esac;
+    next(plates[28]) := case next(index) = 28 : 1; TRUE : plates[28]; esac;
+    next(plates[29]) := case next(index) = 29 : 1; TRUE : plates[29]; esac;
+    next(plates[30]) := case next(index) = 30 : 1; TRUE : plates[30]; esac;
+    next(plates[31]) := case next(index) = 31 : 1; TRUE : plates[31]; esac;
+    next(plates[32]) := case next(index) = 32 : 1; TRUE : plates[32]; esac;
+    next(plates[33]) := case next(index) = 33 : 1; TRUE : plates[33]; esac;
+    next(plates[34]) := case next(index) = 34 : 1; TRUE : plates[34]; esac;
+    next(plates[35]) := case next(index) = 35 : 1; TRUE : plates[35]; esac;
+    next(plates[36]) := case next(index) = 36 : 1; TRUE : plates[36]; esac;
+    next(plates[37]) := case next(index) = 37 : 1; TRUE : plates[37]; esac;
+    next(plates[38]) := case next(index) = 38 : 1; TRUE : plates[38]; esac;
+    next(plates[39]) := case next(index) = 39 : 1; TRUE : plates[39]; esac;
+    next(plates[40]) := case next(index) = 40 : 1; TRUE : plates[40]; esac;
+    next(plates[41]) := case next(index) = 41 : 1; TRUE : plates[41]; esac;
+    next(plates[42]) := case next(index) = 42 : 1; TRUE : plates[42]; esac;
+    next(plates[43]) := case next(index) = 43 : 1; TRUE : plates[43]; esac;
+    next(plates[44]) := case next(index) = 44 : 1; TRUE : plates[44]; esac;
+    next(plates[45]) := case next(index) = 45 : 1; TRUE : plates[45]; esac;
+    next(plates[46]) := case next(index) = 46 : 1; TRUE : plates[46]; esac;
+    next(plates[47]) := case next(index) = 47 : 1; TRUE : plates[47]; esac;
+    
+
+-- forbid stepping over an already visited plate,
+-- unless it is the end plate
+TRANS
+  (index = 9) | ((plates[next(index)] != 1) )
+
+-- There is no possible path that reaches the goal state
+LTLSPEC !(F goal_state)
+
+-- to run the model
+-- NuSMV number-puzzle-hw.smv
+-- you can see the output in the terminal which shows the path taken by the model to reach the goal state
+-- the value index represents the current position of the plate
+-- the output is attached in the submission
